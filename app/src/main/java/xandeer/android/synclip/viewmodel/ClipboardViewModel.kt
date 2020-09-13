@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import xandeer.android.synclip.repository.ClipboardRepository
@@ -19,12 +21,15 @@ class ClipboardViewModel(
 
   val err get() = _err as LiveData<String>
 
+  private var cancelable: Job? = null
   fun fetch() {
-    viewModelScope.launch {
+    cancelable?.cancel()
+    cancelable = viewModelScope.launch {
       try {
         val v = repo.fetch()
         _fetched.value = v.content
         Timber.d("Fetched: $v")
+      } catch (e: CancellationException) {
       } catch (e: Throwable) {
         Timber.e(e, "Fetch failed.")
         _err.value = e.message ?: ""
@@ -35,8 +40,9 @@ class ClipboardViewModel(
   fun send(text: String) {
     viewModelScope.launch {
       try {
-        val v= repo.send(text)
+        val v = repo.send(text)
         _fetched.value = v.content
+        Timber.d("Sent: $v")
       } catch (e: Throwable) {
         Timber.e(e, "Send failed.")
         _err.value = e.message ?: ""

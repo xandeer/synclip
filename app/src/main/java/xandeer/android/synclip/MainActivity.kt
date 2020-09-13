@@ -21,9 +21,7 @@ class MainActivity : AppCompatActivity() {
     setContentView(R.layout.activity_main)
     setCallbacks()
     observe()
-    if (intent.type != null) {
-      openFromThird()
-    }
+    openFromThird()
   }
 
   private val vm: ClipboardViewModel by viewModel()
@@ -56,6 +54,12 @@ class MainActivity : AppCompatActivity() {
         vm.send(it)
       }
     }
+
+    fetched.setOnClickListener {
+      (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(
+        ClipData.newPlainText(this.packageName, fetched.text)
+      )
+    }
   }
 
   private fun getClipboardText() =
@@ -78,8 +82,6 @@ class MainActivity : AppCompatActivity() {
 
     vm.fetched.observe {
       fetched.text = it
-      (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(
-        ClipData.newPlainText(this.packageName, it))
     }
 
     vm.err.observe {
@@ -93,9 +95,12 @@ class MainActivity : AppCompatActivity() {
     val t = when (intent.action) {
       Intent.ACTION_SEND -> intent.getStringExtra(Intent.EXTRA_TEXT)
       Intent.ACTION_PROCESS_TEXT -> intent.getStringExtra(Intent.EXTRA_PROCESS_TEXT)
-      Intent.ACTION_CREATE_SHORTCUT -> {
+      ACTION_SYNCLIP_SHORTCUT -> {
         intent.getStringExtra(SHORTCUT_NAME)?.let {
-          handleShortcuts(it)
+          Timber.i("Handle shortcut: $it")
+          fetched.post { // post for getting clipboard
+            handleShortcuts(it)
+          }
         }
         null
       }
@@ -122,6 +127,7 @@ class MainActivity : AppCompatActivity() {
   }
 
   companion object {
+    private const val ACTION_SYNCLIP_SHORTCUT = "xandeer.android.synclip.shortcut"
     private const val SHORTCUT_NAME = "shortcut_name"
     private const val FETCH = "fetch"
     private const val SEND = "send"
