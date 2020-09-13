@@ -1,0 +1,33 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+  <shortcut
+    android:shortcutId="fetch"
+    android:enabled="true"
+    android:shortcutShortLabel="@string/fetch_from_server_short"
+    android:shortcutLongLabel="@string/fetch_from_server_short" >
+    <intent
+      android:action="xandeer.android.synclip.SHORTCUT"
+      android:targetPackage="xandeer.android.synclip"
+      android:targetClass="xandeer.android.synclip.MainActivity" >
+      <extra
+        android:name="shortcut_name"
+        android:value="fetch"/>
+    </intent>
+    <categories android:name="android.shortcut.conversation" />
+  </shortcut>
+
+  <shortcut
+    android:shortcutId="send"
+    android:enabled="true"
+    android:shortcutShortLabel="@string/send_to_server_short"
+    android:shortcutLongLabel="@string/send_to_server">
+    <intent
+      android:action="xandeer.android.synclip.SHORTCUT"
+      android:targetPackage="xandeer.android.synclip"
+      android:targetClass="xandeer.android.synclip.MainActivity" >
+      <extra
+        android:name="shortcut_name"
+        android:value="send"/>
+    </intent>
+    <categories android:name="android.shortcut.conversation" />
+  </shortcut>
+</shortcuts>
