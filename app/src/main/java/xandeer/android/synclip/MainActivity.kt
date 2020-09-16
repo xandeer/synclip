@@ -5,9 +5,12 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.activity_main.*
@@ -26,32 +29,37 @@ class MainActivity : AppCompatActivity() {
 
   private val vm: ClipboardViewModel by viewModel()
   private fun setCallbacks() {
-    host.setOnEditorActionListener { v, id, _ ->
-      if (id == EditorInfo.IME_ACTION_NEXT) {
-        val t = v.text?.toString()
+    host.setOnFocusChangeListener { _, hasFocus ->
+      if (!hasFocus) {
+        val t = host.text?.toString()
         if (!t.isNullOrEmpty()) {
           vm.setHost(t)
         }
       }
-      false
+    }
+    port.setOnFocusChangeListener { _, hasFocus ->
+      if (!hasFocus) {
+        port.text?.toString()?.toInt()?.let {
+          vm.setPort(it)
+        }
+      }
     }
     port.setOnEditorActionListener { v, id, _ ->
       if (id == EditorInfo.IME_ACTION_DONE) {
-        v.text?.toString()?.toInt()?.let {
-          vm.setPort(it)
-        }
         v.clearFocus()
       }
       false
     }
 
-    fetch.setOnClickListener {
-      vm.fetch()
-    }
-
-    send.setOnClickListener {
-      getClipboardText()?.let {
-        vm.send(it)
+    buttons.children.forEach { v ->
+      v.setOnClickListener { _ ->
+        when (v.id) {
+          R.id.fetch -> vm.fetch()
+          R.id.send -> getClipboardText()?.let {
+            vm.send(it)
+          }
+        }
+        hideSoftInput()
       }
     }
 
@@ -59,6 +67,18 @@ class MainActivity : AppCompatActivity() {
       (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(
         ClipData.newPlainText(this.packageName, fetched.text)
       )
+    }
+
+    (buttons.parent as View).setOnClickListener {
+      hideSoftInput()
+    }
+  }
+
+  private fun hideSoftInput() {
+    currentFocus?.let {
+      it.clearFocus()
+      (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?)
+        ?.hideSoftInputFromWindow(it.applicationWindowToken, 0)
     }
   }
 
