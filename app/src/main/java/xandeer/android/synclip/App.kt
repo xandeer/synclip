@@ -20,7 +20,7 @@ class App : Application() {
       )
     }
 
-    single { Retrofit.create(get()) }
+    factory { Retrofit.create(get()) }
 
     factory { ClipboardRepository(get()) }
 

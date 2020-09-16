@@ -2,18 +2,21 @@ package xandeer.android.synclip.sharedpreference
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import timber.log.Timber
 
 class SharedPreference(private val sp: SharedPreferences) {
   fun getHost(): String = sp.getString(HOST, "") ?: ""
 
   fun setHost(host: String) {
-    sp.edit { putString(HOST, host) }
+    sp.edit(true) { putString(HOST, host) }
+    Timber.d("SP set host: $host")
   }
 
   fun getPort(): Int = sp.getInt(PORT, 3000)
 
   fun setPort(port: Int) {
-    sp.edit { putInt(PORT, port) }
+    sp.edit(true) { putInt(PORT, port) }
+    Timber.d("SP set port: $port")
   }
 
   companion object {
