@@ -67,6 +67,7 @@ class MainActivity : AppCompatActivity() {
       (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(
         ClipData.newPlainText(this.packageName, fetched.text)
       )
+      Toast.makeText(this, "Copied", Toast.LENGTH_SHORT).show()
     }
 
     (buttons.parent as View).setOnClickListener {

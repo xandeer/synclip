@@ -1,7 +1,9 @@
 package xandeer.android.synclip.repository
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import org.koin.java.KoinJavaComponent.get
 import xandeer.android.synclip.network.API
 import xandeer.android.synclip.network.NetworkClipboard
@@ -9,28 +11,29 @@ import xandeer.android.synclip.network.asDomain
 import xandeer.android.synclip.sharedpreference.SharedPreference
 
 class ClipboardRepository(
-//  private val api: API,
   private val sp: SharedPreference
 ) {
   private val api get() = get(API::class.java)
 
-  suspend fun fetch() = withContext(Dispatchers.IO) {
-    val v = api.fetch()
-    if (v.err.isNullOrEmpty()) {
-      v.asDomain()
+  fun fetch() = flow {
+    emit(api.fetch())
+  }.map {
+    if (it.err.isNullOrEmpty()) {
+      it.asDomain()
     } else {
-      throw RuntimeException(v.err)
+      throw RuntimeException(it.err)
     }
-  }
+  }.flowOn(IO)
 
-  suspend fun send(text: String) = withContext(Dispatchers.IO) {
-    val v = api.send(NetworkClipboard(text))
-    if (v.err.isNullOrEmpty()) {
-      v.asDomain()
+  fun send(text: String) = flow {
+    emit(api.send(NetworkClipboard(text)))
+  }.map {
+    if (it.err.isNullOrEmpty()) {
+      it.asDomain()
     } else {
-      throw RuntimeException(v.err)
+      throw RuntimeException(it.err)
     }
-  }
+  }.flowOn(IO)
 
   fun getHost(): String = sp.getHost()
 
