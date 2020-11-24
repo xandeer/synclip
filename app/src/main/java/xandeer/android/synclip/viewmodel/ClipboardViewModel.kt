@@ -23,12 +23,13 @@ class ClipboardViewModel(
   val err get() = _err as LiveData<String>
 
   private var cancelable: Job? = null
-  fun fetch() {
+  fun fetch(needUpdateAfterFetched: Boolean) {
     cancelable?.cancel()
     cancelable = viewModelScope.launch {
       try {
         repo.fetch()
           .collect {
+            needUpdateClipboardAfterFetched = needUpdateAfterFetched
             _fetched.value = it.content
             Timber.d("Fetched: $it")
           }
@@ -38,6 +39,13 @@ class ClipboardViewModel(
         _err.value = e.message ?: ""
       }
     }
+  }
+
+  var needUpdateClipboardAfterFetched = false
+    private set
+
+  fun afterFetched() {
+    needUpdateClipboardAfterFetched = false
   }
 
   fun send(text: String) {

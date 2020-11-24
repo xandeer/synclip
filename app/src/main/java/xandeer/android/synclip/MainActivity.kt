@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
     buttons.children.forEach { v ->
       v.setOnClickListener { _ ->
         when (v.id) {
-          R.id.fetch -> vm.fetch()
+          R.id.fetch -> vm.fetch(true)
           R.id.send -> getClipboardText()?.let {
             vm.send(it)
           }
@@ -64,15 +64,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     fetched.setOnClickListener {
-      (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(
-        ClipData.newPlainText(this.packageName, fetched.text)
-      )
-      Toast.makeText(this, "Copied", Toast.LENGTH_SHORT).show()
+      updateClipboard(fetched.text.toString())
     }
 
     (buttons.parent as View).setOnClickListener {
       hideSoftInput()
     }
+  }
+
+  private fun updateClipboard(text: String) {
+    (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(
+      ClipData.newPlainText(this.packageName, text)
+    )
+    Toast.makeText(this, "Copied", Toast.LENGTH_SHORT).show()
   }
 
   private fun hideSoftInput() {
@@ -92,17 +96,21 @@ class MainActivity : AppCompatActivity() {
     vm.host.observe {
       host.setText(it)
       if (it.isNotEmpty()) {
-        vm.fetch()
+        vm.fetch(false)
       }
     }
 
     vm.port.observe {
       port.setText(it.toString())
-      vm.fetch()
+      vm.fetch(false)
     }
 
     vm.fetched.observe {
       fetched.text = it
+      if (vm.needUpdateClipboardAfterFetched) {
+        updateClipboard(it)
+      }
+      vm.afterFetched()
     }
 
     vm.err.observe {
@@ -136,7 +144,7 @@ class MainActivity : AppCompatActivity() {
 
   private fun handleShortcuts(name: String) {
     when (name) {
-      FETCH -> vm.fetch()
+      FETCH -> vm.fetch(true)
       SEND -> getClipboardText()?.let { vm.send(it) }
     }
   }

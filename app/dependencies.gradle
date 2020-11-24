@@ -2,7 +2,6 @@
 // on Api 21 and 22, so before 1.2.0 released using this one.
 // 1.2.0-alpha02 has the bug about attachBaseContext, so shift to 1.1.0-rc01
 def appcompat = '1.1.0-rc01'
-def arch = '2.1.0'
 def constraint_layout = '1.1.2'
 def core_ktx = '1.0.0'
 def coroutines = '1.3.9'
@@ -57,9 +56,6 @@ ext {
     "junit:junit:$junit",
     "com.google.truth:truth:$truth",
     "com.squareup.okhttp3:mockwebserver:$ok_http",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines",
-
-    //  Architecture Components testing libraries
-    "androidx.arch.core:core-testing:$arch"
+    "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines"
   ]
 }
