@@ -5,7 +5,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -63,12 +62,10 @@ class MainActivity : AppCompatActivity() {
       }
     }
 
-    fetched.setOnClickListener {
-      updateClipboard(fetched.text.toString())
-    }
-
-    (buttons.parent as View).setOnClickListener {
-      hideSoftInput()
+    remote.setOnClickListener {
+      val r = remote.text.toString()
+      updateClipboard(r)
+      vm.send(r)
     }
   }
 
@@ -76,6 +73,7 @@ class MainActivity : AppCompatActivity() {
     (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(
       ClipData.newPlainText(this.packageName, text)
     )
+    local.text = text
     Toast.makeText(this, "Copied", Toast.LENGTH_SHORT).show()
   }
 
@@ -96,17 +94,17 @@ class MainActivity : AppCompatActivity() {
     vm.host.observe {
       host.setText(it)
       if (it.isNotEmpty()) {
-        vm.fetch(false)
+        sync()
       }
     }
 
     vm.port.observe {
       port.setText(it.toString())
-      vm.fetch(false)
+      sync()
     }
 
     vm.fetched.observe {
-      fetched.text = it
+      remote.text = it
       if (vm.needUpdateClipboardAfterFetched) {
         updateClipboard(it)
       }
@@ -120,6 +118,19 @@ class MainActivity : AppCompatActivity() {
     }
   }
 
+  override fun onResume() {
+    super.onResume()
+    sync()
+  }
+
+  private fun sync() {
+    local.post {
+      val l = getClipboardText()
+      l?.let { local.text = it }
+      vm.sync(l)
+    }
+  }
+
   private fun openFromThird() {
     val t = when (intent.action) {
       Intent.ACTION_SEND -> intent.getStringExtra(Intent.EXTRA_TEXT)
@@ -127,7 +138,7 @@ class MainActivity : AppCompatActivity() {
       ACTION_SYNCLIP_SHORTCUT -> {
         intent.getStringExtra(SHORTCUT_NAME)?.let {
           Timber.i("Handle shortcut: $it")
-          fetched.post { // post for getting clipboard
+          remote.post { // post for getting clipboard
             handleShortcuts(it)
           }
         }

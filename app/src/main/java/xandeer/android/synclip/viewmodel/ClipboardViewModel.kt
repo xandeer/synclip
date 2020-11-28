@@ -22,6 +22,31 @@ class ClipboardViewModel(
 
   val err get() = _err as LiveData<String>
 
+  fun sync(local: String?) {
+    cancelable?.cancel()
+    cancelable = viewModelScope.launch {
+      try {
+        repo.fetch()
+          .collect {
+            needUpdateClipboardAfterFetched = false
+            _fetched.value = it.content
+            Timber.d("Sync Fetched: $it")
+          }
+
+        if (_fetched.value != local && local != null) {
+          repo.send(local)
+            .collect {
+              Timber.d("Sync Sent: $it")
+            }
+        }
+      } catch (e: CancellationException) {
+      } catch (e: Throwable) {
+        Timber.e(e, "Sync failed.")
+        _err.value = e.message ?: ""
+      }
+    }
+  }
+
   private var cancelable: Job? = null
   fun fetch(needUpdateAfterFetched: Boolean) {
     cancelable?.cancel()

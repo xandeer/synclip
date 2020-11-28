@@ -1,70 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  android:orientation="vertical"
+  android:padding="16dp"
   tools:context=".MainActivity">
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <LinearLayout
+    android:id="@+id/server"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="18dp">
-
-    <LinearLayout
-      android:id="@+id/buttons"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:gravity="center"
-      android:orientation="vertical"
-      android:paddingVertical="12dp"
-      app:layout_constraintTop_toBottomOf="@id/port_layout">
-
-      <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/send"
-        android:layout_width="wrap_content"
-        android:layout_height="56dp"
-        android:layout_marginBottom="20dp"
-        android:text="@string/send_to_server" />
-
-      <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/fetch"
-        android:layout_width="wrap_content"
-        android:layout_height="56dp"
-        android:text="@string/fetch_from_server" />
-    </LinearLayout>
-
-    <TextView
-      android:id="@+id/fetched"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="@color/fetched_bg"
-      android:gravity="center_vertical"
-      android:paddingVertical="12dp"
-      android:textIsSelectable="true"
-      app:layout_constraintLeft_toLeftOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/buttons" />
-
-    <com.google.android.material.textfield.TextInputLayout
-      android:id="@+id/port_layout"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      app:layout_constraintTop_toBottomOf="@id/host_layout">
-
-      <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/port"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/port_hint"
-        android:imeOptions="actionDone"
-        android:inputType="number" />
-    </com.google.android.material.textfield.TextInputLayout>
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <com.google.android.material.textfield.TextInputLayout
       android:id="@+id/host_layout"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      app:layout_constraintTop_toTopOf="parent">
+      android:layout_height="wrap_content">
 
       <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/host"
@@ -75,6 +27,84 @@
         android:imeOptions="actionNext"
         android:inputType="numberDecimal" />
     </com.google.android.material.textfield.TextInputLayout>
-  </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.core.widget.NestedScrollView>
+    <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/port_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/port"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/port_hint"
+        android:imeOptions="actionDone"
+        android:inputType="number" />
+    </com.google.android.material.textfield.TextInputLayout>
+  </LinearLayout>
+
+  <LinearLayout
+    android:id="@+id/contents"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:background="@color/fetched_bg"
+    android:orientation="horizontal"
+    android:paddingVertical="12dp"
+    android:baselineAligned="false">
+
+    <ScrollView
+      android:tag="a"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1">
+
+      <TextView
+        android:tag="a1"
+        android:id="@+id/local"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:textIsSelectable="true" />
+    </ScrollView>
+
+    <ScrollView
+      android:tag="b"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1">
+
+      <TextView
+        android:tag="b1"
+        android:id="@+id/remote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:textIsSelectable="true" />
+    </ScrollView>
+  </LinearLayout>
+
+  <LinearLayout
+    android:id="@+id/buttons"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:layout_marginBottom="20dp"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <androidx.appcompat.widget.AppCompatButton
+      android:id="@+id/send"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:text="@string/send_to_server" />
+
+    <androidx.appcompat.widget.AppCompatButton
+      android:id="@+id/fetch"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:text="@string/fetch_from_server" />
+  </LinearLayout>
+
+</LinearLayout>
