@@ -1,0 +1,10 @@
+<resources>
+  <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
+    <item name="colorPrimary">@color/hablack</item>
+    <item name="colorPrimaryDark">@color/black</item>
+    <item name="colorOnPrimary">@color/grey</item>
+    <item name="android:colorBackground">@color/hagrey</item>
+    <item name="colorSurface">@color/black</item>
+    <item name="colorOnSurface">@color/grey</item>
+  </style>
+</resources>

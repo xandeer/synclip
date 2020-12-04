@@ -2,8 +2,6 @@
   <string name="app_name">Synclip</string>
   <string name="host_hint">Host</string>
   <string name="port_hint">Port</string>
-  <string name="send_to_server">Send To Server</string>
-  <string name="send_to_server_short">Send</string>
   <string name="fetch_from_server">Fetch From Server</string>
-  <string name="fetch_from_server_short">Fetch</string>
+  <string name="toggle_dark_mode">toggle dark mode</string>
 </resources>

@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.children
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -24,6 +25,13 @@ class MainActivity : AppCompatActivity() {
     setCallbacks()
     observe()
     openFromThird()
+    initDarkMode()
+  }
+
+  private fun initDarkMode() {
+    if (vm.isDarkMode) {
+      AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+    }
   }
 
   private val vm: ClipboardViewModel by viewModel()
@@ -54,9 +62,7 @@ class MainActivity : AppCompatActivity() {
       v.setOnClickListener { _ ->
         when (v.id) {
           R.id.fetch -> vm.fetch(true)
-          R.id.send -> getClipboardText()?.let {
-            vm.send(it)
-          }
+          R.id.toggle_dark_mode -> toggleDarkMode()
         }
         hideSoftInput()
       }
@@ -67,6 +73,16 @@ class MainActivity : AppCompatActivity() {
       updateClipboard(r)
       vm.send(r)
     }
+  }
+
+  private fun toggleDarkMode() {
+    val mode = if (vm.isDarkMode) {
+      AppCompatDelegate.MODE_NIGHT_NO
+    } else {
+      AppCompatDelegate.MODE_NIGHT_YES
+    }
+    vm.setDarkMode(!vm.isDarkMode)
+    AppCompatDelegate.setDefaultNightMode(mode)
   }
 
   private fun updateClipboard(text: String) {
@@ -135,15 +151,6 @@ class MainActivity : AppCompatActivity() {
     val t = when (intent.action) {
       Intent.ACTION_SEND -> intent.getStringExtra(Intent.EXTRA_TEXT)
       Intent.ACTION_PROCESS_TEXT -> intent.getStringExtra(Intent.EXTRA_PROCESS_TEXT)
-      ACTION_SYNCLIP_SHORTCUT -> {
-        intent.getStringExtra(SHORTCUT_NAME)?.let {
-          Timber.i("Handle shortcut: $it")
-          remote.post { // post for getting clipboard
-            handleShortcuts(it)
-          }
-        }
-        null
-      }
       else -> null
     }
 
@@ -153,23 +160,9 @@ class MainActivity : AppCompatActivity() {
     }
   }
 
-  private fun handleShortcuts(name: String) {
-    when (name) {
-      FETCH -> vm.fetch(true)
-      SEND -> getClipboardText()?.let { vm.send(it) }
-    }
-  }
-
   private fun <T> LiveData<T>.observe(cb: ((it: T) -> Unit)) {
     observe(this@MainActivity, Observer {
       cb(it)
     })
-  }
-
-  companion object {
-    private const val ACTION_SYNCLIP_SHORTCUT = "xandeer.android.synclip.shortcut"
-    private const val SHORTCUT_NAME = "shortcut_name"
-    private const val FETCH = "fetch"
-    private const val SEND = "send"
   }
 }

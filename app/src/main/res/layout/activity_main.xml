@@ -48,19 +48,16 @@
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="1"
-    android:background="@color/fetched_bg"
+    android:baselineAligned="false"
     android:orientation="horizontal"
-    android:paddingVertical="12dp"
-    android:baselineAligned="false">
+    android:paddingVertical="12dp">
 
     <ScrollView
-      android:tag="a"
       android:layout_width="0dp"
       android:layout_height="match_parent"
       android:layout_weight="1">
 
       <TextView
-        android:tag="a1"
         android:id="@+id/local"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -69,13 +66,11 @@
     </ScrollView>
 
     <ScrollView
-      android:tag="b"
       android:layout_width="0dp"
       android:layout_height="match_parent"
       android:layout_weight="1">
 
       <TextView
-        android:tag="b1"
         android:id="@+id/remote"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -92,14 +87,14 @@
     android:gravity="center"
     android:orientation="horizontal">
 
-    <androidx.appcompat.widget.AppCompatButton
-      android:id="@+id/send"
+    <com.google.android.material.button.MaterialButton
+      android:id="@+id/toggle_dark_mode"
       android:layout_width="0dp"
       android:layout_height="match_parent"
       android:layout_weight="1"
-      android:text="@string/send_to_server" />
+      android:text="@string/toggle_dark_mode" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <com.google.android.material.button.MaterialButton
       android:id="@+id/fetch"
       android:layout_width="0dp"
       android:layout_height="match_parent"

@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="colorPrimary">#6200EE</color>
-  <color name="colorPrimaryDark">#3700B3</color>
-  <color name="colorAccent">#03DAC5</color>
-  <color name="fetched_bg">#dddd</color>
+  <color name="grey">#eeee</color>
+  <color name="white">#fff</color>
+  <color name="ainezumi">#566c73</color>
+  <color name="fukagawanezuni">#77969a</color>
+  <color name="asagi">#33a6b8</color>
+  <color name="hahaasagi">#1e88a8</color>
+
+  <color name="black">#222</color>
+  <color name="hablack">#333</color>
+  <color name="hagrey">#555</color>
 </resources>

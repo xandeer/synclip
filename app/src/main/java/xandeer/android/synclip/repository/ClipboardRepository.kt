@@ -46,4 +46,10 @@ class ClipboardRepository(
   fun setPort(port: Int) {
     sp.setPort(port)
   }
+
+  fun isDarkMode(): Boolean = sp.isDarkMode()
+
+  fun setDarkMode(enabled: Boolean) {
+    sp.setDarkMode(enabled)
+  }
 }

@@ -19,8 +19,16 @@ class SharedPreference(private val sp: SharedPreferences) {
     Timber.d("SP set port: $port")
   }
 
+  fun isDarkMode(): Boolean = sp.getBoolean(IS_DARK_MODE, false)
+
+  fun setDarkMode(enabled: Boolean) {
+    sp.edit(true) { putBoolean(IS_DARK_MODE, enabled) }
+    Timber.i("SP set is dark mode enabled: $enabled")
+  }
+
   companion object {
     private const val HOST = "host"
     private const val PORT = "port"
+    private const val IS_DARK_MODE = "is_dark_mode"
   }
 }

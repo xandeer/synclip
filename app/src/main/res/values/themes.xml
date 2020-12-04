@@ -1,0 +1,10 @@
+<resources>
+  <!-- Base application theme. -->
+  <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
+    <item name="colorPrimary">@color/asagi</item>
+    <item name="colorPrimaryDark">@color/hahaasagi</item>
+    <item name="colorOnPrimary">@color/white</item>
+    <item name="colorSurface">@color/grey</item>
+  </style>
+
+</resources>

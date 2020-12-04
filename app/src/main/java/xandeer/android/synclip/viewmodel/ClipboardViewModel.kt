@@ -103,4 +103,10 @@ class ClipboardViewModel(
     repo.setPort(port)
     _port.value = port
   }
+
+  val isDarkMode get() = repo.isDarkMode()
+
+  fun setDarkMode(enabled: Boolean) {
+    repo.setDarkMode(enabled)
+  }
 }
