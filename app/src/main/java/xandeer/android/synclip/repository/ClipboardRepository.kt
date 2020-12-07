@@ -52,4 +52,10 @@ class ClipboardRepository(
   fun setDarkMode(enabled: Boolean) {
     sp.setDarkMode(enabled)
   }
+
+  fun setRecentHosts(current: String) {
+    sp.setRecentHosts(current)
+  }
+
+  fun getRecentHosts() = sp.getRecentHosts()
 }

@@ -15,13 +15,15 @@ class ClipboardViewModel(
   private val repo: ClipboardRepository
 ) : ViewModel() {
   private val _fetched = MutableLiveData<String>("")
-
   val fetched get() = _fetched as LiveData<String>
 
   private val _err = MutableLiveData<String>("")
-
   val err get() = _err as LiveData<String>
 
+  private val _recentHosts = MutableLiveData<Set<String>>(repo.getRecentHosts())
+  val recentHosts get() = _recentHosts as LiveData<Set<String>>
+
+  private var isUpdatedHost = false
   fun sync(local: String?) {
     cancelable?.cancel()
     cancelable = viewModelScope.launch {
@@ -38,6 +40,11 @@ class ClipboardViewModel(
             .collect {
               Timber.d("Sync Sent: $it")
             }
+        }
+        if (isUpdatedHost) {
+          isUpdatedHost = false
+          repo.setRecentHosts(_host.value!!)
+          _recentHosts.value = repo.getRecentHosts()
         }
       } catch (e: CancellationException) {
       } catch (e: Throwable) {
@@ -95,6 +102,7 @@ class ClipboardViewModel(
   val port get() = _port as LiveData<Int>
 
   fun setHost(host: String) {
+    isUpdatedHost = true
     repo.setHost(host)
     _host.value = host
   }

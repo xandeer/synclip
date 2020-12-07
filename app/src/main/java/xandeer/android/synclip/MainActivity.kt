@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.children
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     observe()
     openFromThird()
     initDarkMode()
+    initRecentHosts()
   }
 
   private fun initDarkMode() {
@@ -132,6 +134,15 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
       }
     }
+
+    vm.recentHosts.observe {
+      recentHosts.adapter = RecentHostsAdapter(it)
+      Timber.i("Recent hosts: it")
+    }
+  }
+
+  private fun initRecentHosts() {
+    recentHosts.layoutManager = GridLayoutManager(this, 3)
   }
 
   override fun onResume() {
