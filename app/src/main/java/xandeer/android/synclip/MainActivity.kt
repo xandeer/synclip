@@ -14,15 +14,18 @@ import androidx.core.view.children
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
-import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+import xandeer.android.synclip.databinding.ActivityMainBinding
 import xandeer.android.synclip.viewmodel.ClipboardViewModel
 
 class MainActivity : AppCompatActivity() {
+  private lateinit var binding: ActivityMainBinding
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
+    binding = ActivityMainBinding.inflate(layoutInflater)
+    setContentView(binding.root)
     setCallbacks()
     observe()
     openFromThird()
@@ -38,42 +41,44 @@ class MainActivity : AppCompatActivity() {
 
   private val vm: ClipboardViewModel by viewModel()
   private fun setCallbacks() {
-    host.setOnFocusChangeListener { _, hasFocus ->
-      if (!hasFocus) {
-        val t = host.text?.toString()
-        if (!t.isNullOrEmpty()) {
-          vm.setHost(t)
+    binding.apply {
+      host.setOnFocusChangeListener { _, hasFocus ->
+        if (!hasFocus) {
+          val t = host.text?.toString()
+          if (!t.isNullOrEmpty()) {
+            vm.setHost(t)
+          }
         }
       }
-    }
-    port.setOnFocusChangeListener { _, hasFocus ->
-      if (!hasFocus) {
-        port.text?.toString()?.toInt()?.let {
-          vm.setPort(it)
+      port.setOnFocusChangeListener { _, hasFocus ->
+        if (!hasFocus) {
+          port.text?.toString()?.toInt()?.let {
+            vm.setPort(it)
+          }
         }
       }
-    }
-    port.setOnEditorActionListener { v, id, _ ->
-      if (id == EditorInfo.IME_ACTION_DONE) {
-        v.clearFocus()
+      port.setOnEditorActionListener { v, id, _ ->
+        if (id == EditorInfo.IME_ACTION_DONE) {
+          v.clearFocus()
+        }
+        false
       }
-      false
-    }
 
-    buttons.children.forEach { v ->
-      v.setOnClickListener { _ ->
-        when (v.id) {
-          R.id.fetch -> vm.fetch(true)
-          R.id.toggle_dark_mode -> toggleDarkMode()
+      buttons.children.forEach { v ->
+        v.setOnClickListener {
+          when (v.id) {
+            R.id.fetch -> vm.fetch(true)
+            R.id.toggle_dark_mode -> toggleDarkMode()
+          }
+          hideSoftInput()
         }
-        hideSoftInput()
       }
-    }
 
-    remote.setOnClickListener {
-      val r = remote.text.toString()
-      updateClipboard(r)
-      vm.send(r)
+      remote.setOnClickListener {
+        val r = remote.text.toString()
+        updateClipboard(r)
+        vm.send(r)
+      }  
     }
   }
 
@@ -91,7 +96,7 @@ class MainActivity : AppCompatActivity() {
     (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(
       ClipData.newPlainText(this.packageName, text)
     )
-    local.text = text
+    binding.local.text = text
     Toast.makeText(this, "Copied", Toast.LENGTH_SHORT).show()
   }
 
@@ -110,19 +115,19 @@ class MainActivity : AppCompatActivity() {
 
   private fun observe() {
     vm.host.observe {
-      host.setText(it)
+      binding.host.setText(it)
       if (it.isNotEmpty()) {
         sync()
       }
     }
 
     vm.port.observe {
-      port.setText(it.toString())
+      binding.port.setText(it.toString())
       sync()
     }
 
     vm.fetched.observe {
-      remote.text = it
+      binding.remote.text = it
       if (vm.needUpdateClipboardAfterFetched) {
         updateClipboard(it)
       }
@@ -136,13 +141,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     vm.recentHosts.observe {
-      recentHosts.adapter = RecentHostsAdapter(it)
+      binding.recentHosts.adapter = RecentHostsAdapter(it)
       Timber.i("Recent hosts: it")
     }
   }
 
   private fun initRecentHosts() {
-    recentHosts.layoutManager = GridLayoutManager(this, 3)
+    binding.recentHosts.layoutManager = GridLayoutManager(this, 3)
   }
 
   override fun onResume() {
@@ -151,9 +156,9 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun sync() {
-    local.post {
+    binding.local.post {
       val l = getClipboardText()
-      l?.let { local.text = it }
+      l?.let { binding.local.text = it }
       vm.sync(l)
     }
   }
