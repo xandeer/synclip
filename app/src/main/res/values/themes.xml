@@ -1,10 +1,14 @@
 <resources>
-  <!-- Base application theme. -->
   <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
     <item name="colorPrimary">@color/asagi</item>
     <item name="colorPrimaryDark">@color/hahaasagi</item>
     <item name="colorOnPrimary">@color/white</item>
     <item name="colorSurface">@color/grey</item>
+    <item name="minorButton">@style/MinorButton</item>
   </style>
 
+  <style name="MinorButton" parent="Widget.MaterialComponents.Button">
+    <item name="android:textColor">@color/black</item>
+    <item name="android:backgroundTint">@color/grey</item>
+  </style>
 </resources>

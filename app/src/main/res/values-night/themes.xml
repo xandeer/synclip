@@ -6,5 +6,10 @@
     <item name="android:colorBackground">@color/hagrey</item>
     <item name="colorSurface">@color/black</item>
     <item name="colorOnSurface">@color/grey</item>
+    <item name="minorButton">@style/MinorButton</item>
+  </style>
+
+  <style name="MinorButton" parent="Widget.MaterialComponents.Button">
+    <item name="android:backgroundTint">@color/fukagawanezuni</item>
   </style>
 </resources>
