@@ -1,8 +1,7 @@
-package xandeer.android.synclip
+package xandeer.android.synclip.ui
 
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
@@ -10,7 +9,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.view.children
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,17 +22,17 @@ class MainActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    initDarkMode()
     binding = ActivityMainBinding.inflate(layoutInflater)
     setContentView(binding.root)
     setCallbacks()
     observe()
     openFromThird()
-    initDarkMode()
     initRecentHosts()
   }
 
   private fun initDarkMode() {
-    if (vm.isDarkMode) {
+    if (vm.isDarkModeAtInit) {
       AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     }
   }
@@ -64,36 +62,20 @@ class MainActivity : AppCompatActivity() {
         false
       }
 
-      buttons.children.forEach { v ->
-        v.setOnClickListener {
-          when (v.id) {
-            R.id.fetch -> vm.fetch(true)
-            R.id.toggle_dark_mode -> toggleDarkMode()
-          }
-          hideSoftInput()
-        }
+      buttons.setOnClickListener {
+        hideSoftInput()
       }
 
       remote.setOnClickListener {
         val r = remote.text.toString()
         updateClipboard(r)
         vm.send(r)
-      }  
+      }
     }
-  }
-
-  private fun toggleDarkMode() {
-    val mode = if (vm.isDarkMode) {
-      AppCompatDelegate.MODE_NIGHT_NO
-    } else {
-      AppCompatDelegate.MODE_NIGHT_YES
-    }
-    vm.setDarkMode(!vm.isDarkMode)
-    AppCompatDelegate.setDefaultNightMode(mode)
   }
 
   private fun updateClipboard(text: String) {
-    (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(
+    (getSystemService(CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(
       ClipData.newPlainText(this.packageName, text)
     )
     binding.local.text = text
@@ -103,13 +85,13 @@ class MainActivity : AppCompatActivity() {
   private fun hideSoftInput() {
     currentFocus?.let {
       it.clearFocus()
-      (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?)
+      (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager?)
         ?.hideSoftInputFromWindow(it.applicationWindowToken, 0)
     }
   }
 
   private fun getClipboardText() =
-    (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).primaryClip
+    (getSystemService(CLIPBOARD_SERVICE) as ClipboardManager).primaryClip
       ?.getItemAt(0)
       ?.text?.toString()
 
@@ -143,6 +125,15 @@ class MainActivity : AppCompatActivity() {
     vm.recentHosts.observe {
       binding.recentHosts.adapter = RecentHostsAdapter(it)
       Timber.i("Recent hosts: it")
+    }
+
+    vm.isDarkMode.observe {
+      val next = if (it) {
+        AppCompatDelegate.MODE_NIGHT_YES
+      } else {
+        AppCompatDelegate.MODE_NIGHT_NO
+      }
+      AppCompatDelegate.setDefaultNightMode(next)
     }
   }
 

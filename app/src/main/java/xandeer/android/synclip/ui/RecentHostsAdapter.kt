@@ -1,7 +1,6 @@
-package xandeer.android.synclip
+package xandeer.android.synclip.ui
 
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.activity.ComponentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
@@ -23,7 +22,10 @@ class RecentHostsAdapter(private val hosts: Set<String>) :
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
     val view = MaterialButton(parent.context).apply {
-      layoutParams = ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+      layoutParams = ViewGroup.LayoutParams(
+        ViewGroup.LayoutParams.WRAP_CONTENT,
+        ViewGroup.LayoutParams.WRAP_CONTENT
+      )
     }
 
     return VH(view)

@@ -112,9 +112,13 @@ class ClipboardViewModel(
     _port.value = port
   }
 
-  val isDarkMode get() = repo.isDarkMode()
+  val isDarkModeAtInit get() = repo.isDarkMode()
+  private val _isDarkMode = MutableLiveData<Boolean>(isDarkModeAtInit)
+  val isDarkMode get() = _isDarkMode as LiveData<Boolean>
 
-  fun setDarkMode(enabled: Boolean) {
-    repo.setDarkMode(enabled)
+  fun toggleDarkMode() {
+    val next = !repo.isDarkMode()
+    repo.setDarkMode(next)
+    _isDarkMode.postValue(next)
   }
 }

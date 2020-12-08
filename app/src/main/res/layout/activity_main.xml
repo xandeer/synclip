@@ -5,7 +5,7 @@
   android:layout_height="match_parent"
   android:orientation="vertical"
   android:padding="16dp"
-  tools:context=".MainActivity">
+  tools:context=".ui.MainActivity">
 
   <LinearLayout
     android:id="@+id/server"
@@ -84,27 +84,9 @@
     </ScrollView>
   </LinearLayout>
 
-  <LinearLayout
+  <xandeer.android.synclip.ui.Buttons
     android:id="@+id/buttons"
     android:layout_width="match_parent"
-    android:layout_height="56dp"
-    android:layout_marginBottom="20dp"
-    android:gravity="center"
-    android:orientation="horizontal">
-
-    <com.google.android.material.button.MaterialButton
-      android:id="@+id/toggle_dark_mode"
-      android:layout_width="0dp"
-      android:layout_height="match_parent"
-      android:layout_weight="1"
-      android:text="@string/toggle_dark_mode" />
-
-    <com.google.android.material.button.MaterialButton
-      android:id="@+id/fetch"
-      android:layout_width="0dp"
-      android:layout_height="match_parent"
-      android:layout_weight="1"
-      android:text="@string/fetch_from_server" />
-  </LinearLayout>
+    android:layout_height="wrap_content"/>
 
 </LinearLayout>
