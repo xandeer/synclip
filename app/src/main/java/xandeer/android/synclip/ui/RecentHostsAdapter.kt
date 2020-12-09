@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import xandeer.android.synclip.R
+import xandeer.android.synclip.hideSoftInput
 import xandeer.android.synclip.viewmodel.ClipboardViewModel
 
 class RecentHostsAdapter(private val hosts: Set<String>) :
@@ -17,6 +18,7 @@ class RecentHostsAdapter(private val hosts: Set<String>) :
       button.setOnClickListener {
         (it.context as ComponentActivity).getViewModel<ClipboardViewModel>()
           .setHost(host)
+        it.hideSoftInput()
       }
     }
   }
